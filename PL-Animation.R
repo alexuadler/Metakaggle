@@ -1,11 +1,14 @@
 setwd("~/GitHub/NYCDSA/Personal Projects/KaggleMeta")
 
 ###### Animation ########
+require(dplyr)
+require(ggplot2)
 require(lubridate)
 require(animation)
 require(grid)
+
 # Info about the competition
-plFile<-"axa-PL.csv" # download the zip file and place it in the working directory
+plFile<-"axa-PL.csv" # download and unzip the PL file and place it in the working directory
 PLHist<-read.csv(plFile)
 PLHist$SubmissionDate<-ymd_hms(PLHist$SubmissionDate)
 higherBetter<-T # is a higher score better? (i.e. ROC)
