@@ -4,14 +4,16 @@ setwd("~/GitHub/NYCDSA/Personal Projects/KaggleMeta")
 require(dplyr)
 require(ggplot2)
 require(lubridate)
-require(animation)
-require(grid)
+require(animation) # to make the animated GIF
+require(grid) # to keep the time stamp static
 
 # Info about the competition
 plFile<-"axa-PL.csv" # download and unzip the PL file and place it in the working directory
 PLHist<-read.csv(plFile)
 PLHist$SubmissionDate<-ymd_hms(PLHist$SubmissionDate)
-higherBetter<-T # is a higher score better? (i.e. ROC)
+
+# is a higher score better? (i.e. ROC)
+higherBetter<-T 
 
 # teamName<-"Vivi's Angels"
 # teamID<-PLHist[which(PLHist$TeamName==teamName),1][1]
@@ -29,6 +31,12 @@ minute(latest)<-0
 second(latest)<-0
 
 # totalTeams<-length(unique(PLHist$TeamId))
+
+# daysIn is the number of days into the competition
+# yMin and yMax describe the score window you'd like to see
+# higherBetter decides whether higher scores are better or lower scores are better
+# PLHist is the dataframe with the PL history
+# startDate is the start date of the competition
 
 genPlot=function(daysIn,yMin=0,yMax=1,higherBetter=T,PLHist,startDate){
   thisTime<-startDate+days(daysIn)
