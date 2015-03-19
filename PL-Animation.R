@@ -1,42 +1,34 @@
 setwd("~/GitHub/NYCDSA/Personal Projects/KaggleMeta")
 
 ###### Animation ########
-require(dplyr)
-require(ggplot2)
 require(lubridate)
-require(animation) # to make the animated GIF
-require(grid) # to keep the time stamp static
-
+require(animation)
+require(grid)
 # Info about the competition
-plFile<-"axa-PL.csv" # download and unzip the PL file and place it in the working directory
+### download the zip file and place it in the working directory
+### go to the public leaderboard page and download the file at the end
+plFile<-"axa-PL.csv"
+animFile<-"axa-vivi.gif"
 PLHist<-read.csv(plFile)
 PLHist$SubmissionDate<-ymd_hms(PLHist$SubmissionDate)
-
-# is a higher score better? (i.e. ROC)
-higherBetter<-T 
+higherBetter<-T # is a higher score better? (i.e. ROC)
 
 # teamName<-"Vivi's Angels"
 # teamID<-PLHist[which(PLHist$TeamName==teamName),1][1]
 
-# Start of the competition (midnight UTC)
+# Start of the competition (last second of that day)
 start<-min(PLHist$SubmissionDate)+days(1)
 hour(start)<-0
 minute(start)<-0
 second(start)<-0
 
-# Latest day of the competition (midnight UTC)
+# Start of the competition (last second of that day)
 latest<-max(PLHist$SubmissionDate)+days(1)
 hour(latest)<-0
 minute(latest)<-0
 second(latest)<-0
 
 # totalTeams<-length(unique(PLHist$TeamId))
-
-# daysIn is the number of days into the competition
-# yMin and yMax describe the score window you'd like to see
-# higherBetter decides whether higher scores are better or lower scores are better
-# PLHist is the dataframe with the PL history
-# startDate is the start date of the competition
 
 genPlot=function(daysIn,yMin=0,yMax=1,higherBetter=T,PLHist,startDate){
   thisTime<-startDate+days(daysIn)
@@ -79,11 +71,13 @@ genPlot=function(daysIn,yMin=0,yMax=1,higherBetter=T,PLHist,startDate){
   print(p)
 }
 
+animInt=5
+
 pl.animate <- function() {
-  lapply(seq(0,as.numeric(latest-start),1), function(i) {
-    genPlot(i,PLHist=PLHist,startDate=start,yMax=1,yMin=0.4)
+  lapply(seq(0,as.numeric(latest-start),animInt), function(i) {
+    genPlot(i,PLHist=PLHist,startDate=start,yMax=1,yMin=0.6)
   })
 }
 
-saveGIF(pl.animate(), interval = .3, movie.name="axa.gif")
+saveGIF(pl.animate(), interval = .25, movie.name=animFile)
 
