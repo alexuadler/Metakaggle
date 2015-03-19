@@ -14,8 +14,11 @@ PLHist<-read.csv(plFile)
 PLHist$SubmissionDate<-ymd_hms(PLHist$SubmissionDate)
 higherBetter<-T # is a higher score better? (i.e. ROC)
 
+#### Which team are you competing on ###
 teamName<-"Vivi's Angels"
 teamID<-PLHist[which(PLHist$TeamName==teamName),1][1]
+
+
 
 # Start of the competition (last second of that day)
 start<-min(PLHist$SubmissionDate)+days(1)
@@ -56,7 +59,7 @@ genPlot=function(daysIn,yMin=0,yMax=1,higherBetter=T,PLHist,startDate){
                                  gp=gpar(col="red", fontsize=18, fontface="bold")))
   
   p<-ggplot(data=thisPL)+
-    geom_point(aes(y=bestScore,x=rank),size=1)+
+    geom_point(aes(y=bestScore,x=rank),size=2)+
     ylim(c(yMin,yMax))+
     scale_x_reverse()+
     #   xlim(c(totalTeams,0))+
@@ -66,7 +69,7 @@ genPlot=function(daysIn,yMin=0,yMax=1,higherBetter=T,PLHist,startDate){
     theme_bw()
   
   if(is.na(teamRank)) print(p)
-  if(!is.na(teamRank)) print(p+geom_hline(yintercept=teamScore)+geom_vline(xintercept=teamRank))
+  if(!is.na(teamRank)) print(p+geom_hline(yintercept=teamScore,color="red",alpha=0.7)+geom_vline(xintercept=teamRank,color="red",alpha=0.7))
 
 }
 
