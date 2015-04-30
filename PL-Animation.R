@@ -7,12 +7,16 @@ require(grid)
 ### go to the public leaderboard page and download the file at the end
 plFile<-"axa-PL.csv"
 animFile<-"axa-vivi.gif"
+
 PLHist<-read.csv(plFile)
 PLHist$SubmissionDate<-ymd_hms(PLHist$SubmissionDate)
 higherBetter<-T # is a higher score better? (i.e. ROC)
 
-# teamName<-"Vivi's Angels"
-# teamID<-PLHist[which(PLHist$TeamName==teamName),1][1]
+#### Which team are you competing on ###
+teamName<-"Vivi's Angels"
+teamID<-PLHist[which(PLHist$TeamName==teamName),1][1]
+
+
 
 # Start of the competition (last second of that day)
 start<-min(PLHist$SubmissionDate)+days(1)
@@ -46,18 +50,14 @@ genPlot=function(daysIn,yMin=0,yMax=1,higherBetter=T,PLHist,startDate){
     group_by(1:n())
   names(thisPL)[3]<-"rank"
   
-  # teamScore<-NA
-  # teamRank<-NA
-  # if(teamID %in% thisPL$TeamId){
-  #   teamScore<-as.numeric(thisPL[which(thisPL$TeamId==teamID),2])
-  #   teamRank<-as.numeric(thisPL[which(thisPL$TeamId==teamID),3])
-  # }
+  teamScore<-ifelse(teamID %in% thisPL$TeamId,as.numeric(thisPL[which(thisPL$TeamId==teamID),2]),NA)
+  teamRank<-ifelse(teamID %in% thisPL$TeamId,as.numeric(thisPL[which(thisPL$TeamId==teamID),3]),NA)
   
   timeStamp <- grobTree(textGrob(as.character(thisTime), x=0.1,  y=0.95, hjust=0,
                                  gp=gpar(col="red", fontsize=18, fontface="bold")))
   
   p<-ggplot(data=thisPL)+
-    geom_point(aes(y=bestScore,x=rank),size=1)+
+    geom_point(aes(y=bestScore,x=rank),size=2)+
     ylim(c(yMin,yMax))+
     scale_x_reverse()+
     #   xlim(c(totalTeams,0))+
@@ -66,14 +66,16 @@ genPlot=function(daysIn,yMin=0,yMax=1,higherBetter=T,PLHist,startDate){
     annotation_custom(timeStamp)+
     theme_bw()
   
-  print(p)
+  if(is.na(teamRank)) print(p)
+  if(!is.na(teamRank)) print(p+geom_hline(yintercept=teamScore,color="red",alpha=0.7)+geom_vline(xintercept=teamRank,color="red",alpha=0.7))
+
 }
 
-animInt=5
+animInt=1
 
 pl.animate <- function() {
   lapply(seq(0,as.numeric(latest-start),animInt), function(i) {
-    genPlot(i,PLHist=PLHist,startDate=start,yMax=1,yMin=0.6)
+    genPlot(i,PLHist=PLHist,startDate=start,yMax=1,yMin=0.4)
   })
 }
 
