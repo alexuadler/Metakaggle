@@ -1,5 +1,3 @@
-setwd("~/GitHub/NYCDSA/Personal Projects/KaggleMeta")
-
 ###### Animation ########
 require(lubridate)
 require(animation)
